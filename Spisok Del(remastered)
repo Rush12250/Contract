@@ -43,18 +43,6 @@ contract Spisok_Del   {
         tmp.length = tmp.length - counter;
     }
     
-    function del(address Addr) validZapisStruct(Addr) private 
-        returns(bool success) {
-        uint q = ZapisStructs[Addr].index;
-        address last = array[array.length-1];
-        array[q] = last;
-        ZapisStructs[last].index = q;
-        ZapisStructs[Addr].lifeTime = 0;
-        delete ZapisStructs[Addr];
-        --array.length;
-        return true;
-    }
-    
     // Добавить запись
     function insertZapis(address Addr, string Opisanie, uint lifeTime) 
     newZapisStruct(Addr) public returns(bool success) {
@@ -83,6 +71,7 @@ contract Spisok_Del   {
         _;
     }
     
+    //Выводит список записей
     function getArray() public constant returns (address[] a)
     {
         a = array;
