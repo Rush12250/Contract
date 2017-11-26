@@ -27,39 +27,19 @@ contract Spisok_Del   {
 
     // Очистить список устаревших записей
     function Ochistit_Starie()  public returns(bool success){
-       uint counter = 0;
-       address[] tmp;
-       address[] tmp1;
+        uint counter = 0;
+        address[] tmp;
         for(uint i = 0; i < array.length; i++) {
-            
-            
             if(now < ZapisStructs[array[i]].timecreated + ZapisStructs[array[i]].lifeTime){
-                
                 tmp.push(array[i]);
                 counter++;
             }
              else{
                  delete ZapisStructs[array[i]];
              }   
-        //        delete ZapisStructs[Addr];
-        //        list.length--;
-        
-                
-            //    uint q = ZapisStructs[Addr].index;
-            //    address last = array[array.length-1];
-            //    array[q] = last;
-            //    ZapisStructs[last].index = q;
-            //    
-            //    counter = counter++;
-            //    delete ZapisStructs[Addr];
-            //    return true;
-            //    list.length = list.length - counter;
         }
-         
         array=tmp;
         tmp.length = tmp.length - counter;
-        
-       //array.length = array.length - counter;
     }
     
     function del(address Addr) validZapisStruct(Addr) private returns(bool success) {
@@ -72,6 +52,7 @@ contract Spisok_Del   {
         --array.length;
         return true;
     }
+    
     // Добавить запись
     function insertZapis(address Addr, string Opisanie, uint lifeTime) 
     newZapisStruct(Addr) public returns(bool success) {
@@ -81,13 +62,14 @@ contract Spisok_Del   {
         ZapisStructs[Addr].index = array.push(Addr) - 1;
         return true;
     }
-   // Проверка на существующую запись
+    
+    // Проверка на существующую запись
     modifier validZapisStruct(address Addr) {
         require(array.length != 0 && array[ZapisStructs[Addr].index] == Addr);
         _;
     }
     
-   // Проверка для новой записи
+    // Проверка для новой записи
     modifier newZapisStruct(address Addr) {
         bool isNewZapisStruct = true;
         for(uint i = 0; i < array.length; i++) {
@@ -105,24 +87,15 @@ contract Spisok_Del   {
         return a;
     }
   
-// Обновить запись
+    // Обновить запись
     function updateZapis(address Addr, string Opisanie, uint lifeTime) 
     validZapisStruct(Addr) public returns(bool success) {
         ZapisStructs[Addr].Opisanie = Opisanie;
         ZapisStructs[Addr].lifeTime = lifeTime;
         return true; 
     }
+    
     // Удалить запись
-
-   // function deleteZapis(address Addr) validZapisStruct(Addr) public {
-   //     if (ZapisStructs[Addr].index >= array.length) return;
-   //     
-   //     for (uint i = ZapisStructs[Addr].index; i<array.length-1; i++){
-   //         array[i]=array[i+1];
-    //       }
-    //       delete array[array.length-1];
-    //       array.length--;
-    //     }
     function deleteZapis(address Addr)  public {
         if (ZapisStructs[Addr].index >= array.length) return;
         address[] tmp;
@@ -134,11 +107,8 @@ contract Spisok_Del   {
             else{
                 delete ZapisStructs[array[i]];
             }
-            
-            
         }
         array=tmp;
         tmp.length = tmp.length - counter;
-        
     }
 }
