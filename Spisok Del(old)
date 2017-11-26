@@ -1,0 +1,122 @@
+pragma solidity ^0.4.10;
+
+contract Zapisi {
+
+  
+  struct ZapisStruct {
+    
+    string Zapis;
+    uint index;
+    uint timestamps;
+    uint Ostatok_do_udalenia;
+    
+    
+  }
+  mapping(string => ZapisStruct) private zapisStructs;
+  string[] private userIndex;
+
+  event LogNewZapis  (string indexed Nazvanie, uint index, string Zapis);
+  event LogUpdateZapis(string indexed Nazvanie, uint index, string Zapis,uint timestamps);
+  event LogDeleteZapis(string indexed Nazvanie, uint index);
+  
+  // 1) Добавлять запись
+  function insertZapis ( string Nazvanie,  string Zapis   )  public  returns(uint index)
+  {
+    
+    zapisStructs[Nazvanie].Zapis = Zapis;
+    zapisStructs[Nazvanie].timestamps = now;
+    zapisStructs[Nazvanie].index     = userIndex.push(Nazvanie)-1;
+    
+    LogNewZapis(
+        Nazvanie, 
+        zapisStructs[Nazvanie].index, 
+        Zapis);
+    return userIndex.length-1;
+  }
+ // 2) Удалять запись
+  function deleteZapis(string Nazvanie) public returns(uint index)
+  {
+    uint rowToDelete = zapisStructs[Nazvanie].index;
+    string keyToMove = userIndex[userIndex.length-1];
+    userIndex[rowToDelete] = keyToMove;
+    zapisStructs[keyToMove].index = rowToDelete; 
+    userIndex.length--;
+    LogDeleteZapis(
+        Nazvanie, 
+        rowToDelete);
+    LogUpdateZapis(
+        keyToMove, 
+        rowToDelete, 
+        zapisStructs[keyToMove].Zapis, 
+        zapisStructs[keyToMove].timestamps);
+    return rowToDelete;
+  }
+  
+    function getZapis(string Nazvanie) public constant returns
+    (string Zapis, uint timestamps,uint Ostatok_do_udalenia_v_secundah,uint Ostatok_do_udalenia_v_chasah, uint index)
+  {
+      
+    return(
+      zapisStructs[Nazvanie].Zapis, 
+      zapisStructs[Nazvanie].timestamps,
+      Ostatok_do_udalenia_v_secundah =(7 days +zapisStructs[Nazvanie].timestamps) -now,
+      Ostatok_do_udalenia_v_chasah = Ostatok_do_udalenia_v_secundah/60/60,
+      
+      zapisStructs[Nazvanie].index);
+      
+      
+  } 
+  
+  //3) Изменять запись
+  function updateZapis(string Nazvanie, string Zapis) public returns(bool success) 
+  {
+    zapisStructs[Nazvanie].timestamps = now;
+    LogUpdateZapis(
+      Nazvanie, 
+      zapisStructs[Nazvanie].index,
+      zapisStructs[Nazvanie].Zapis, 
+      zapisStructs[Nazvanie].timestamps);
+    return true;
+  }
+  
+  function getZapisCount() public constant returns(uint count)
+  {
+    return userIndex.length;
+  }
+  //4) Выводить список записей
+   function Paslednii_4_Zapisi() public constant returns
+   (string Nazvanie,string Nazvanie1,string Nazvanie2,string Nazvanie3)
+  {
+    if (userIndex.length == 0) return("Empty","Empty","Empty","Empty");
+    if (userIndex.length == 1) return (userIndex[0],"Empty","Empty","Empty");
+    if (userIndex.length == 2) return (userIndex[0],userIndex[1],"Empty","Empty");
+    if (userIndex.length == 3) return (userIndex[0],userIndex[1],userIndex[2],"Empty");
+    else return (userIndex[userIndex.length-4],userIndex[userIndex.length-3],userIndex[userIndex.length-2],userIndex[userIndex.length-1]);
+  }
+  //4) Выводить список записей
+  function Ezh_odna_funccia_vivoda_spisca (uint index) public constant
+    returns (string Nazvanie)
+  {
+    return userIndex[index];
+    
+  }
+
+
+     // Очистка списока
+    function Ochistit_vse()  public {
+        for(uint i = 0; i < userIndex.length; i++)
+            zapisStructs[userIndex[i]].Ostatok_do_udalenia = 0;
+        delete userIndex;
+    }
+   
+    // Очистить список устаревших записей
+    function Ochistit_stare_Zapisi() public {
+        for(uint i = 0; i < userIndex.length; i++) {
+            string chichi = userIndex[i];
+        if(now > 7 days +zapisStructs[userIndex[i]].timestamps)
+                deleteZapis(chichi);
+            
+        }
+        
+    }
+}
