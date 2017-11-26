@@ -26,7 +26,7 @@ pragma solidity^0.4.15;
         }
 
         // Очистить список устаревших записей
-        function remove_old()public returns(bool success){
+        function remove_old()public{
             uint counter=0;
             address[]tmp;
             for(uint i=0;i<array.length;i++){
