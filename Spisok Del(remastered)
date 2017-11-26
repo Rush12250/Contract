@@ -4,7 +4,7 @@ pragma solidity ^0.4.15;
 contract Spisok_Del   {
 
     struct ZapisStruct {
-        string Opisanie;    // Описание
+        string descript;    // Описание
         uint timecreated;  // Время создания
         uint lifeTime;  // Время выполнения
         uint index;         // Индекс
@@ -19,14 +19,14 @@ contract Spisok_Del   {
     }
 
     // Очистить список 
-    function Ochistit_vse()  public {
+    function remove_all()  public {
         for(uint i = 0; i < array.length; i++)
             delete ZapisStructs[array[i]];
             delete array;
     }
 
     // Очистить список устаревших записей
-    function Ochistit_Starie()  public returns(bool success){
+    function remove_old()  public returns(bool success){
         uint counter = 0;
         address[] tmp;
         for(uint i = 0; i < array.length; i++) {
@@ -44,9 +44,9 @@ contract Spisok_Del   {
     }
     
     // Добавить запись
-    function insertZapis(address Addr, string Opisanie, uint lifeTime) 
+    function insert(address Addr, string descript, uint lifeTime) 
     newZapisStruct(Addr) public returns(bool success) {
-        ZapisStructs[Addr].Opisanie = Opisanie;
+        ZapisStructs[Addr].descript = descript;
         ZapisStructs[Addr].timecreated = now;
         ZapisStructs[Addr].lifeTime = lifeTime;
         ZapisStructs[Addr].index = array.push(Addr) - 1;
@@ -79,15 +79,15 @@ contract Spisok_Del   {
     }
   
     // Обновить запись
-    function updateZapis(address Addr, string Opisanie, uint lifeTime) 
+    function update(address Addr, string descript, uint lifeTime) 
     validZapisStruct(Addr) public returns(bool success) {
-        ZapisStructs[Addr].Opisanie = Opisanie;
+        ZapisStructs[Addr].descript = descript;
         ZapisStructs[Addr].lifeTime = lifeTime;
         return true; 
     }
     
     // Удалить запись
-     function deleteZapis(address Addr) public {
+     function remove(address Addr) public {
         if (ZapisStructs[Addr].index >= array.length) return;
         for (uint i = ZapisStructs[Addr].index; i<array.length-1; i++){
             array[i]=array[i+1];
