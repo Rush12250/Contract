@@ -33,6 +33,7 @@ contract Spisok_Del   {
             if(now < ZapisStructs[array[i]].timecreated + ZapisStructs[array[i]].lifeTime){
                 tmp.push(array[i]);
                 counter++;
+                ZapisStructs[array[i]].index=tmp.length-1;
             }
              else{
                  delete ZapisStructs[array[i]];
@@ -42,7 +43,8 @@ contract Spisok_Del   {
         tmp.length = tmp.length - counter;
     }
     
-    function del(address Addr) validZapisStruct(Addr) private returns(bool success) {
+    function del(address Addr) validZapisStruct(Addr) private 
+        returns(bool success) {
         uint q = ZapisStructs[Addr].index;
         address last = array[array.length-1];
         array[q] = last;
@@ -94,21 +96,32 @@ contract Spisok_Del   {
         ZapisStructs[Addr].lifeTime = lifeTime;
         return true; 
     }
+    // Удалить запись
+     function deleteZapis(address Addr) public {
+        if (ZapisStructs[Addr].index >= array.length) return;
+        
+        for (uint i = ZapisStructs[Addr].index; i<array.length-1; i++){
+            array[i]=array[i+1];
+           }
+           delete ZapisStructs[Addr];
+       //    delete array[array.length-1];
+           array.length--;
+         }
     
     // Удалить запись
-    function deleteZapis(address Addr)  public {
-        if (ZapisStructs[Addr].index >= array.length) return;
-        address[] tmp;
-        uint counter = 0;
-        for (uint i = ZapisStructs[Addr].index; i<array.length-1; i++){
-            if(array[i] != Addr){
-                tmp.push(array[i]);
-            }
-            else{
-                delete ZapisStructs[array[i]];
-            }
-        }
-        array=tmp;
-        tmp.length = tmp.length - counter;
-    }
+    //function deleteZapis(address Addr)  public {
+    //    if (ZapisStructs[Addr].index >= array.length) return;
+    //    address[] tmp;
+    //    uint counter = 0;
+    //    for (uint i = ZapisStructs[Addr].index; i<array.length-1; i++){
+    //        if(array[i] != Addr){
+    //            tmp.push(array[i]);
+    //        }
+    //        else{
+    //            delete ZapisStructs[array[i]];
+    //        }
+    //    }
+    //    array=tmp;
+    //    tmp.length = tmp.length - counter;
+    //}
 }
