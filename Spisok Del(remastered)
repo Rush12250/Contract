@@ -1,98 +1,98 @@
-pragma solidity ^0.4.15;
+pragma solidity^0.4.15;
 
 
-contract Spisok_Del   {
+        contract Spisok_Del{
 
-    struct ZapisStruct {
+        struct Struct{
         string descript;    // Описание
         uint timecreated;  // Время создания
-        uint lifeTime;  // Время выполнения
+        uint deadline;  // Время выполнения
         uint index;         // Индекс
-    }
+        }
 
-    mapping(address => ZapisStruct) public ZapisStructs;  
-    address[] public array;                     
+        mapping(address=>Struct)public Structs;
+        address[]public array;
 
-    // Количество записей
-    function count() public constant returns(uint) {
-        return array.length;
-    }
+        // Количество записей
+        function count()public constant returns(uint){
+            return array.length;
+        }
 
-    // Очистить список 
-    function remove_all()  public {
-        for(uint i = 0; i < array.length; i++)
-            delete ZapisStructs[array[i]];
+        // Очистить список 
+        function remove_all()public {
+            for(uint i=0;i<array.length;i++)
+            delete Structs[array[i]];
             delete array;
-    }
+        }
 
-    // Очистить список устаревших записей
-    function remove_old()  public returns(bool success){
-        uint counter = 0;
-        address[] tmp;
-        for(uint i = 0; i < array.length; i++) {
-            if(now < ZapisStructs[array[i]].timecreated + ZapisStructs[array[i]].lifeTime){
-                tmp.push(array[i]);
-                counter++;
-                ZapisStructs[array[i]].index=tmp.length-1;
+        // Очистить список устаревших записей
+        function remove_old()public returns(bool success){
+            uint counter=0;
+            address[]tmp;
+            for(uint i=0;i<array.length;i++){
+                if(now<Structs[array[i]].timecreated+Structs[array[i]].deadline){
+                    tmp.push(array[i]);
+                    counter++;
+                    Structs[array[i]].index=tmp.length-1;   
+                }
+                else{
+                delete Structs[array[i]];
             }
-             else{
-                 delete ZapisStructs[array[i]];
-            }   
+            }
+            array=tmp;
+            tmp.length=tmp.length-counter;
         }
-        array=tmp;
-        tmp.length = tmp.length - counter;
-    }
-    
-    // Добавить запись
-    function insert(address Addr, string descript, uint lifeTime) 
-    newZapisStruct(Addr) public returns(bool success) {
-        ZapisStructs[Addr].descript = descript;
-        ZapisStructs[Addr].timecreated = now;
-        ZapisStructs[Addr].lifeTime = lifeTime;
-        ZapisStructs[Addr].index = array.push(Addr) - 1;
-        return true;
-    }
-    
-    // Проверка на существующую запись
-    modifier validZapisStruct(address Addr) {
-        require(array.length != 0 && array[ZapisStructs[Addr].index] == Addr);
-        _;
-    }
-    
-    // Проверка для новой записи
-    modifier newZapisStruct(address Addr) {
-        bool isNewZapisStruct = true;
-        for(uint i = 0; i < array.length; i++) {
-            isNewZapisStruct = (array[i] != Addr ? true : false);
-            if(!isNewZapisStruct)
+
+        // Добавить запись
+        function insert(address Addr,string descript,uint deadline)
+        newStruct(Addr)public returns(bool success){
+            Structs[Addr].descript=descript;
+            Structs[Addr].timecreated=now;
+            Structs[Addr].deadline=deadline;
+            Structs[Addr].index=array.push(Addr)-1;
+            return true;
+        }
+
+        // Проверка на существующую запись
+        modifier realStruct(address Addr){
+            require(array.length!=0&&array[Structs[Addr].index]==Addr);
+            _;
+        }
+
+        // Проверка для новой записи
+        modifier newStruct(address Addr){
+            bool isNewStruct=true;
+            for(uint i=0;i<array.length;i++){
+                isNewStruct=(array[i]!=Addr?true:false);
+                if(!isNewStruct)
                 break;
+            }
+            require(isNewStruct);
+            _;
         }
-        require(isNewZapisStruct);
-        _;
-    }
-    
-    //Выводит список записей
-    function getArray() public constant returns (address[] a)
-    {
-        a = array;
-        return a;
-    }
-  
-    // Обновить запись
-    function update(address Addr, string descript, uint lifeTime) 
-    validZapisStruct(Addr) public returns(bool success) {
-        ZapisStructs[Addr].descript = descript;
-        ZapisStructs[Addr].lifeTime = lifeTime;
-        return true; 
-    }
-    
-    // Удалить запись
-     function remove(address Addr) public {
-        if (ZapisStructs[Addr].index >= array.length) return;
-        for (uint i = ZapisStructs[Addr].index; i<array.length-1; i++){
-            array[i]=array[i+1];
-           }
-           delete ZapisStructs[Addr];
-           array.length--;
-    }
-}
+
+        //Выводит список записей
+        function getArray()public constant returns(address[]List)
+        {
+            List=array;
+            return List;
+        }
+
+        // Обновить запись
+        function update(address Addr,string descript,uint deadline)
+        realStruct(Addr)public returns(bool success){
+            Structs[Addr].descript=descript;
+            Structs[Addr].deadline=deadline;
+            return true;
+        }
+
+        // Удалить запись
+        function remove(address Addr)public {
+            if(Structs[Addr].index>=array.length)return;
+            for(uint i=Structs[Addr].index;i<array.length-1;i++){
+                array[i]=array[i+1];
+            }
+            delete Structs[Addr];
+            array.length--;
+            }
+        }
