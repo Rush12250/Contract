@@ -19,14 +19,14 @@ pragma solidity^0.4.15;
         }
 
         // Очистить список 
-        function remove_all()public {
+        function removeAll()public {
             for(uint i=0;i<array.length;i++)
             delete Structs[array[i]];
             delete array;
         }
 
         // Очистить список устаревших записей
-        function remove_old()public{
+        function removeOld()public{
             uint counter=0;
             address[]tmp;
             for(uint i=0;i<array.length;i++){
