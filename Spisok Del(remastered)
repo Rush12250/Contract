@@ -48,7 +48,8 @@ pragma solidity^0.4.15;
             (string descript, uint timecreated,uint deadline,
             uint balanceSec,uint index)
           {
-            if(0<array.length&&0<Structs[Addr].deadline) { 
+            if(0<array.length&&0<Structs[Addr].deadline
+            &&now>Structs[Addr].deadline+Structs[Addr].timecreated) { 
             return(
               Structs[Addr].descript, 
              Structs[Addr].timecreated,
@@ -61,7 +62,7 @@ pragma solidity^0.4.15;
                 Structs[Addr].descript, 
                 Structs[Addr].timecreated,
                 Structs[Addr].deadline,
-                balanceSec=0,
+                balanceSec=0,    
                 Structs[Addr].index);
             }
           }
