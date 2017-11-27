@@ -49,7 +49,7 @@ pragma solidity^0.4.15;
             uint balanceSec,uint index)
           {
             if(0<array.length&&0<Structs[Addr].deadline
-            &&now>Structs[Addr].deadline+Structs[Addr].timecreated) { 
+            &&now<Structs[Addr].deadline+Structs[Addr].timecreated) { 
             return(
               Structs[Addr].descript, 
              Structs[Addr].timecreated,
