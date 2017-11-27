@@ -10,7 +10,7 @@ pragma solidity^0.4.15;
         uint index;         // Индекс
         }
 
-        mapping(address=>Struct)public Structs;
+        mapping(address=>Struct)private Structs;
         address[]public array;
 
         // Количество записей
