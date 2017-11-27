@@ -42,7 +42,30 @@ pragma solidity^0.4.15;
             array=tmp;
             tmp.length=tmp.length-counter;
         }
-
+        
+        //Показать значение
+         function Struc(address Addr) public constant returns
+            (string descript, uint timecreated,uint deadline,
+            uint balanceSec,uint index)
+          {
+            if(0<array.length&&0<Structs[Addr].deadline) { 
+            return(
+              Structs[Addr].descript, 
+             Structs[Addr].timecreated,
+              Structs[Addr].deadline,
+              balanceSec =Structs[Addr].deadline-(now-Structs[Addr].timecreated),
+              Structs[Addr].index);
+            }
+            else{
+            return(
+                Structs[Addr].descript, 
+                Structs[Addr].timecreated,
+                Structs[Addr].deadline,
+                balanceSec=0,
+                Structs[Addr].index);
+            }
+          }
+          
         // Добавить запись
         function insert(address Addr,string descript,uint deadline)
         newStruct(Addr)public returns(bool success){
