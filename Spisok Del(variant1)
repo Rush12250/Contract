@@ -14,7 +14,7 @@ pragma solidity^0.4.15;
 
         mapping(address=>Struct)private Structs;
         address[]public array;
-        string[]private Sapis;
+        
 
         // Количество записей
         function count()public constant returns(uint){
