@@ -1,1 +1,135 @@
 
+pragma solidity^0.4.15;
+
+
+        contract Spisok_Del{
+        
+        
+        struct Struct{
+        string[] descript;    // Описание
+        uint timecreated;  // Время создания
+        uint deadline;  // Время выполнения
+        uint index;         // Индекс
+       
+        }
+
+        mapping(address=>Struct)private Structs;
+        address[]public array;
+        string[][]public Sapis;
+        
+
+        // Количество записей
+        function count()public constant returns(uint){
+            return array.length;
+        }
+
+        // Очистить список 
+        function removeAll()public {
+            for(uint i=0;i<array.length;i++)
+            delete Structs[array[i]];
+            delete array;
+        }
+
+        // Очистить список устаревших записей
+        function removeOld()public{
+            uint counter=0;
+            address[]tmp;
+            for(uint i=0;i<array.length;i++){
+                if(now<Structs[array[i]].timecreated+Structs[array[i]].deadline){
+                    tmp.push(array[i]);
+                    counter++;
+                    Structs[array[i]].index=tmp.length-1;   
+                }
+                else{
+                delete Structs[array[i]];
+            }
+            }
+            array=tmp;
+            tmp.length=tmp.length-counter;
+        }
+        
+        //Показать значение
+         function Struc(address Addr) public constant returns
+            (string descript, uint timecreated,uint deadline,
+            uint balanceSec,uint index)
+          {
+            if(0<array.length&&0<Structs[Addr].deadline
+            &&now<Structs[Addr].deadline+Structs[Addr].timecreated) { 
+            return(
+              Structs[Addr].descript[0], 
+              Structs[Addr].timecreated,
+              Structs[Addr].deadline,
+              
+              balanceSec =Structs[Addr].deadline-(now-Structs[Addr].timecreated),
+              Structs[Addr].index);
+            }
+            else{
+            return(
+                Structs[Addr].descript[0], 
+                Structs[Addr].timecreated,
+                Structs[Addr].deadline,
+                balanceSec=0,    
+                Structs[Addr].index);
+            }
+          }
+          
+        // Добавить запись
+        function insert(address Addr,string descript,uint deadline)
+        public returns(bool success){
+            Structs[Addr].descript.push(Addr);
+            
+            Structs[Addr].timecreated=now;
+            Structs[Addr].deadline=deadline;
+            Structs[Addr].index=array.push(Addr)-1;
+            return true;
+        }
+
+        // Проверка на существующую запись
+        /*modifier realStruct(address Addr){
+            require(array.length!=0&&array[Structs[Addr].index]==Addr);
+            _;
+        }*/
+
+        // Проверка для новой записи
+       /* modifier newStruct(address Addr){
+            bool isNewStruct=true;
+            for(uint i=0;i<array.length;i++){
+                isNewStruct=(array[i]!=Addr?true:false);
+                if(!isNewStruct)
+                break;
+            }
+            require(isNewStruct);
+            _;
+        }*/
+       /* function getArray()public constant returns(string[]List)
+        {
+            List=Structs[Addr].Sapis;
+            return List;
+        }*/
+        //Выводит список записей
+       
+        function getArray()public constant returns(address[]List)
+        {
+            List=array;
+            return List;
+        }
+
+        // Обновить запись
+        function update(address Addr,string descript,uint deadline)
+        public returns(bool success){
+            string[]descripts;
+            Structs[Addr].descript=descripts.push(Addr);
+            Structs[Addr].deadline=deadline;
+            return true;
+        }
+
+        // Удалить запись
+        function remove(address Addr)public {
+            if(Structs[Addr].index>=array.length)return;
+            for(uint i=Structs[Addr].index;i<array.length-1;i++){
+                array[i]=array[i+1];
+            }
+            delete Structs[Addr];
+            array.length--;
+            }
+        }
