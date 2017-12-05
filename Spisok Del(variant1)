@@ -1,0 +1,123 @@
+pragma solidity^0.4.15;
+
+
+        contract Spisok_Del{
+        
+        string private descripts;
+        
+        struct Struct{
+        string descript;    // Описание
+        uint timecreated;  // Время создания
+        uint deadline;  // Время выполнения
+        uint index;         // Индекс
+        }
+
+        mapping(address=>Struct)private Structs;
+        address[]public array;
+        string[]private Sapis;
+
+        // Количество записей
+        function count()public constant returns(uint){
+            return array.length;
+        }
+
+        // Очистить список 
+        function removeAll()public {
+            for(uint i=0;i<array.length;i++)
+            delete Structs[array[i]];
+            delete array;
+        }
+
+        // Очистить список устаревших записей
+        function removeOld()public{
+            uint counter=0;
+            address[]tmp;
+            for(uint i=0;i<array.length;i++){
+                if(now<Structs[array[i]].timecreated+Structs[array[i]].deadline){
+                    tmp.push(array[i]);
+                    counter++;
+                    Structs[array[i]].index=tmp.length-1;   
+                }
+                else{
+                delete Structs[array[i]];
+            }
+            }
+            array=tmp;
+            tmp.length=tmp.length-counter;
+        }
+        
+        //Показать значение
+         function Struc(address Addr) public constant returns
+            (string descript, uint timecreated,uint deadline,
+            uint balanceSec,uint index)
+          {
+            if(0<array.length&&0<Structs[Addr].deadline
+            &&now<Structs[Addr].deadline+Structs[Addr].timecreated) { 
+            return(
+              Structs[Addr].descript, 
+              Structs[Addr].timecreated,
+              Structs[Addr].deadline,
+              balanceSec =Structs[Addr].deadline-(now-Structs[Addr].timecreated),
+              Structs[Addr].index);
+            }
+            else{
+            return(
+                Structs[Addr].descript, 
+                Structs[Addr].timecreated,
+                Structs[Addr].deadline,
+                balanceSec=0,    
+                Structs[Addr].index);
+            }
+          }
+          
+        // Добавить запись
+        function insert(address Addr,string descript,uint deadline)
+        public returns(bool success){
+            Structs[Addr].descript=strConcat(Structs[Addr].descript,', ',descript);
+            Structs[Addr].timecreated=now;
+            Structs[Addr].deadline=deadline;
+            Structs[Addr].index=array.push(Addr)-1;
+            return true;
+        }
+
+
+        function strConcat(string _a,string _b,string _c)internal returns (string)
+        {
+            bytes memory _ba = bytes(_a);
+            bytes memory _bb = bytes(_b);
+            bytes memory _bc = bytes(_c);
+            string memory abcde= new string(_ba.length + _bb.length + _bc.length);
+            bytes memory babcde = bytes(abcde);
+            uint k = 0;
+            for (uint i = 0;i < _ba.length; i++) babcde[k++] = _ba[i];
+            for (i = 0;i < _bb.length; i++) babcde[k++] = _bb[i];
+            for (i = 0;i < _bc.length; i++) babcde[k++] = _bc[i];
+            return string(babcde);
+        }
+        
+
+        //Выводит список записей
+        function getArray()public constant returns(address[]List)
+        {
+            List=array;
+            return List;
+        }
+
+        // Обновить запись
+        function update(address Addr,string descript,uint deadline)
+        public returns(bool success){
+            Structs[Addr].descript=descript;
+            Structs[Addr].deadline=deadline;
+            return true;
+        }
+
+        // Удалить запись
+        function remove(address Addr)public {
+            if(Structs[Addr].index>=array.length)return;
+            for(uint i=Structs[Addr].index;i<array.length-1;i++){
+                array[i]=array[i+1];
+            }
+            delete Structs[Addr];
+            array.length--;
+            }
+        }
